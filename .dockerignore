@@ -1,0 +1,67 @@
+# Exclude version control directories and files
+.git
+.gitignore
+.gitattributes
+.hg
+.hgignore
+.hgcheck
+.svn
+
+# Exclude project-specific files or directories
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Exclude development and build tools
+*.log
+*.tmp
+*.swp
+*.bak
+*.cache
+*.sql
+*.sqlite3
+*.db
+*.db-journal
+*.log
+*.tmp
+*.bak
+*.diff
+*.patch
+*.pid
+*.coverage
+*.pytest_cache/
+*.idea/
+.vscode/
+.pytest_cache/
+__pycache__/
+
+# Exclude OS and editor-generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+*.swp
+ehthumbs.db
+Icon?
+ehthumbs.vip
+
+# Exclude Docker-specific files
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.override.yml
+
+# Exclude documentation and source code
+docs/
+source/
+
+# Exclude configuration files
+*.conf
+*.json
+*.xml
+*.yaml
+*.yml
+*.env
+
