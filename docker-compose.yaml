@@ -1,0 +1,107 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+    user: root
+    container_name: postgres
+    environment:
+      POSTGRES_DB: airflow
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./pvc/postgres:/var/lib/postgresql/data
+
+  scheduler:
+    image: apache/airflow:2.6.3-python3.11
+    user: root
+    container_name: scheduler
+    command:
+      [
+        "bash",
+        "-c",
+        "apt-get update && apt install -y openjdk-11-jre-headless && su - airflow -c 'pip install pyspark' && airflow db init && airflow scheduler"
+      ]
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./pvc/logs:/opt/airflow/logs
+      - ./csv_data:/csv_data
+    ports:
+      - "8793:8793"
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    depends_on:
+      - postgres
+
+  webserver:
+    image: apache/airflow:2.6.3-python3.11
+    user: root
+    container_name: webserver
+    command:
+      [
+        "bash",
+        "-c",
+        "apt-get update && apt install -y openjdk-11-jre-headless && su - airflow -c 'pip install pyspark' && airflow db init && airflow users create --firstname admin --lastname None --email admin@123.com --password admin --username admin --role Admin && airflow webserver"
+      ]
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./pvc/logs:/opt/airflow/logs
+      - ./csv_data:/csv_data
+    ports:
+      - "8080:8080"
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    depends_on:
+      - scheduler
+
+  ### SPARK CLUSTER
+  spark-master:
+    image: bitnami/spark:latest
+    command: bin/spark-class org.apache.spark.deploy.master.Master
+    ports:
+      - "9090:8080"
+      - "7077:7077"
+    volumes:
+      - ./csv_data:/csv_data
+
+  spark-worker-1:
+    image: bitnami/spark:latest
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    depends_on:
+      - spark-master
+    environment:
+      SPARK_MODE: worker
+      SPARK_WORKER_CORES: '2'
+      SPARK_WORKER_MEMORY: '2g'
+      SPARK_MASTER_URL: spark://spark-master:7077
+    volumes:
+      - ./csv_data:/csv_data
+
+  spark-worker-2:
+    image: bitnami/spark:latest
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    depends_on:
+      - spark-master
+    environment:
+      SPARK_MODE: worker
+      SPARK_WORKER_CORES: '2'
+      SPARK_WORKER_MEMORY: '2g'
+      SPARK_MASTER_URL: spark://spark-master:7077
+    volumes:
+      - ./csv_data:/csv_data
+
+  spark-worker-3:
+    image: bitnami/spark:latest
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    depends_on:
+      - spark-master
+    environment:
+      SPARK_MODE: worker
+      SPARK_WORKER_CORES: '2'
+      SPARK_WORKER_MEMORY: '2g'
+      SPARK_MASTER_URL: spark://spark-master:7077
+    volumes:
+      - ./csv_data:/csv_data
