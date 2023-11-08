@@ -16,7 +16,8 @@ docker-compose up
 This command will initialize Airflow, Spark Master, and Spark Workers.
 
 ## Accessing the Services
-Airflow UI: http://localhost:8080
+1. Airflow UI: http://localhost:8080
 * Username: admin
 * Password: admin
-Spark Master UI: http://localhost:9090
+
+2. Spark Master UI: http://localhost:9090
