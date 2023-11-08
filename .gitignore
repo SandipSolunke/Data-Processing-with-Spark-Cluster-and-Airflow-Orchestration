@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.db
+*.sqlite3
+*.log
+*.bak
+*.swp
+*.tmp
+*.bak
+*.diff
+*.patch
+
+# Virtual Environment
+venv/
+.env/
+.Python
+
+# IDE-specific files (e.g., for VSCode or PyCharm)
+.vscode/
+.idea/
+
+# Compiled Python files
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Other
+*.bak
+*.log
+*.tmp
